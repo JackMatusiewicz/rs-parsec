@@ -40,7 +40,7 @@ mod test {
         let a: Box<dyn Matcher<char>> = Box::new(CharMatcher::char('a'));
         let b: Box<dyn Matcher<char>> = Box::new(CharMatcher::char('b'));
         let om: AndMatcher<char> = AndMatcher::new(vec![a, b]);
-        om.eval("ab").unwrap();
+        assert_eq!(Ok((vec!['a','b'], "")), om.eval("ab"));
     }
 
     #[test]

@@ -35,20 +35,14 @@ mod test {
         let p = CharMatcher::char('a');
         let t = "a";
         let result = p.eval(t);
-        match result {
-            Ok((_,v)) => assert_eq!("", v),
-            _ => panic!("Expected a successful parse")
-        }
+        assert_eq!(Ok(('a', "")), result);
     }
 
     #[test]
+    #[should_panic]
     pub fn simple_char_parser_fail() {
         let p = CharMatcher::char('a');
         let t = "b";
-        let result = p.eval(t);
-        match result {
-            Err(()) => (),
-            _ => panic!("Expected a failure to parse")
-        }
+        p.eval(t).unwrap();
     }
 }
