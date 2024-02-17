@@ -14,8 +14,7 @@ impl<T> OrMatcher<T> {
 
 impl<T> Matcher<T> for OrMatcher<T> {
     fn eval<'a, 'b>(&'a self, s: &'b str) -> Result<(T, &'b str), ()> {
-        for i in 0 .. self.matchers.len() {
-            let m: &Box<dyn Matcher<T>> = &(self.matchers[i]);
+        for m in self.matchers.iter() {
             match m.eval(s) {
                 Ok(s) => return Ok(s),
                 _ => ()

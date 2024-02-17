@@ -16,8 +16,7 @@ impl<T> Matcher<Vec<T>> for AndMatcher<T> {
     fn eval<'a, 'b>(&'a self, s: &'b str) -> Result<(Vec<T>, &'b str), ()> {
         let mut collected = vec![];
         let mut remaining_string = s;
-        for i in 0 .. self.matchers.len() {
-            let m: &Box<dyn Matcher<T>> = &(self.matchers[i]);
+        for m in self.matchers.iter() {
             match m.eval(remaining_string) {
                 Ok((a,s)) => {
                     collected.push(a);
