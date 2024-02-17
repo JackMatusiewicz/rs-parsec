@@ -1,11 +1,12 @@
+use std::rc::Rc;
 use super::matcher::Matcher;
 
 pub struct OrMatcher<T> {
-    matchers: Vec<Box<dyn Matcher<T>>>
+    matchers: Vec<Rc<dyn Matcher<T>>>
 }
 
 impl<T> OrMatcher<T> {
-    pub fn new(matchers: Vec<Box<dyn Matcher<T>>>) -> Self {
+    pub fn new(matchers: Vec<Rc<dyn Matcher<T>>>) -> Self {
         Self {
             matchers
         }
@@ -32,8 +33,8 @@ mod test {
 
     #[test]
     pub fn simple_or_test_success() {
-        let a = Box::new(CharMatcher::char('a'));
-        let b = Box::new(CharMatcher::char('b'));
+        let a = Rc::new(CharMatcher::char('a'));
+        let b = Rc::new(CharMatcher::char('b'));
         let om: OrMatcher<char> = OrMatcher::new(vec![a, b]);
         om.eval("a").unwrap();
         om.eval("b").unwrap();
@@ -42,8 +43,8 @@ mod test {
     #[test]
     #[should_panic]
     pub fn simple_or_test_fail() {
-        let a = Box::new(CharMatcher::char('a'));
-        let b = Box::new(CharMatcher::char('b'));
+        let a = Rc::new(CharMatcher::char('a'));
+        let b = Rc::new(CharMatcher::char('b'));
         let om: OrMatcher<char> = OrMatcher::new(vec![a, b]);
         om.eval("c").unwrap();
     }

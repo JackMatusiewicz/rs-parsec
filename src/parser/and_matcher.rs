@@ -1,11 +1,12 @@
+use std::rc::Rc;
 use super::matcher::Matcher;
 
 pub struct AndMatcher<T> {
-    matchers: Vec<Box<dyn Matcher<T>>>
+    matchers: Vec<Rc<dyn Matcher<T>>>
 }
 
 impl<T> AndMatcher<T> {
-    pub fn new(matchers: Vec<Box<dyn Matcher<T>>>) -> Self {
+    pub fn new(matchers: Vec<Rc<dyn Matcher<T>>>) -> Self {
         Self {
             matchers
         }
@@ -37,8 +38,8 @@ mod test {
 
     #[test]
     pub fn simple_or_test_success() {
-        let a: Box<dyn Matcher<char>> = Box::new(CharMatcher::char('a'));
-        let b: Box<dyn Matcher<char>> = Box::new(CharMatcher::char('b'));
+        let a: Rc<dyn Matcher<char>> = Rc::new(CharMatcher::char('a'));
+        let b: Rc<dyn Matcher<char>> = Rc::new(CharMatcher::char('b'));
         let om: AndMatcher<char> = AndMatcher::new(vec![a, b]);
         assert_eq!(Ok((vec!['a','b'], "")), om.eval("ab"));
     }
@@ -46,8 +47,8 @@ mod test {
     #[test]
     #[should_panic]
     pub fn simple_or_test_fail() {
-        let a: Box<dyn Matcher<char>> = Box::new(CharMatcher::char('a'));
-        let b: Box<dyn Matcher<char>> = Box::new(CharMatcher::char('b'));
+        let a: Rc<dyn Matcher<char>> = Rc::new(CharMatcher::char('a'));
+        let b: Rc<dyn Matcher<char>> = Rc::new(CharMatcher::char('b'));
         let om: AndMatcher<char> = AndMatcher::new(vec![a, b]);
         om.eval("c").unwrap();
     }
