@@ -2,7 +2,7 @@ use super::matcher::Matcher;
 
 pub struct CharMatcher {
     c: char,
-    f: Box<dyn for <'a> Fn(&'a str, char) -> Result<&'a str, ()>>
+    f: Box<dyn for <'a> Fn(&'a str, char) -> Result<(char, &'a str), ()>>
 }
 
 impl CharMatcher {
@@ -11,7 +11,7 @@ impl CharMatcher {
             c,
             f: Box::new(|s: &str, c: char| {
                 if s.as_bytes()[0] == (c as u8) {
-                    Ok(&s[1..])
+                    Ok((c, &s[1..]))
                 } else {
                     Err(())
                 }
@@ -20,8 +20,8 @@ impl CharMatcher {
     }
 }
 
-impl Matcher for CharMatcher {
-    fn eval<'a, 'b>(&'a self, s: &'b str) -> Result<&'b str, ()> {
+impl Matcher<char> for CharMatcher {
+    fn eval<'a, 'b>(&'a self, s: &'b str) -> Result<(char, &'b str), ()> {
         (self.f)(s, self.c)
     }
 }
@@ -36,7 +36,7 @@ mod test {
         let t = "a";
         let result = p.eval(t);
         match result {
-            Ok(v) => assert_eq!("", v),
+            Ok((_,v)) => assert_eq!("", v),
             _ => panic!("Expected a successful parse")
         }
     }
