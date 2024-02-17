@@ -1,16 +1,20 @@
 mod parser;
 
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+pub use crate::parser::*;
 
 #[cfg(test)]
 mod tests {
+    use crate::matcher::Matcher;
     use super::*;
 
     #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    fn simple_parser_test() {
+        let p = matcher_combinators::digits();
+        let p2 = matcher_combinators::digits();
+        let input = "10";
+        let children: Vec<Box<dyn Matcher>> = vec![p, p2];
+        let two_digit_parser = and_matcher::AndMatcher::new(children);
+
+        two_digit_parser.eval(input).unwrap();
     }
 }
